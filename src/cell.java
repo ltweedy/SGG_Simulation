@@ -107,7 +107,7 @@ public class cell {
     }
 
     public void secreteEnzyme(){
-        sim.environment.AddDegraderAtLocation(x(),y(), 30.0*(1.0-MigrationSimulation.boundFraction)*MelaMigration.dt);
+        sim.environment.AddDegraderAtLocation(x(),y(), 0.01*(1.0-MigrationSimulation.boundFraction)*MelaMigration.dt);
     }
 
     public synchronized void split(double a, double b, double c){

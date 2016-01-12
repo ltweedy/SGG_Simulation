@@ -141,10 +141,10 @@ public class ChemicalEnvironment {
         double dy1 =  dc[1]-Math.floor(dc[1]);
         double dy2 = -dc[1]+Math.ceil(dc[1]);
 
-        double c11 = profile[(int)Math.floor(dc[0])][(int)Math.floor(dc[1])][0];
-        double c12 = profile[(int)Math.floor(dc[0])][(int)Math.ceil(dc[1])][0];
-        double c21 = profile[(int)Math.ceil(dc[0])][(int)Math.floor(dc[1])][0];
-        double c22 = profile[(int)Math.ceil(dc[0])][(int)Math.ceil(dc[1])][0];
+        double c11 = profile[(int)Math.floor(dc[0])][(int)Math.floor(dc[1])][1];
+        double c12 = profile[(int)Math.floor(dc[0])][(int)Math.ceil(dc[1])][1];
+        double c21 = profile[(int)Math.ceil(dc[0])][(int)Math.floor(dc[1])][1];
+        double c22 = profile[(int)Math.ceil(dc[0])][(int)Math.ceil(dc[1])][1];
 
         //System.out.format("c11 -> %f, c12 -> %f, c21 -> %f,c22 -> %f%n",  c11,c12,c21,c22);
         //System.out.format("dx1 -> %f, dx2 -> %f, dy1 -> %f,dy2 -> %f%n",  dx1,dx2,dy1,dy2);

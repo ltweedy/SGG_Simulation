@@ -30,8 +30,8 @@ public class MelaMigration {
     public static boolean exdeg  = true;
 
     public static int     yPos = 40;
-    public static double  max = 10.0;
-    public static double  min = 10.0;
+    public static double  max = 0.0;
+    public static double  min = 0.0;
     public static boolean abs = true;
     public static boolean pinned = false;
     public static boolean ctc = false;

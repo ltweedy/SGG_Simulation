@@ -39,7 +39,7 @@ public class MigrationSimulation {
     public static double kD     = 0.02;
     public static double[] DiffC  = new double[] {12000, 1200};
 
-    public static double boundFraction = 1.0;
+    public static double boundFraction = 0.0;
 
     public static double kM     = 0.7;
     public static double sMax   = 30.0;
@@ -323,8 +323,8 @@ public class MigrationSimulation {
 
             // COMMENT HERE TO REMOVE RECEPTOR KINETICS FROM CHEMOTAXIS
 
-            double sx = (0.5*(cp1x+c0)/(0.5*(cp1x+c0)+kD) - 0.5*(cm1x+c0)/(0.5*(cm1x+c0)+kD));
-            double sy = (0.5*(cp1y+c0)/(0.5*(cp1y+c0)+kD) - 0.5*(cm1y+c0)/(0.5*(cm1y+c0)+kD));
+            double sx = -(0.5*(cp1x+c0)/(0.5*(cp1x+c0)+kD) - 0.5*(cm1x+c0)/(0.5*(cm1x+c0)+kD));
+            double sy = -(0.5*(cp1y+c0)/(0.5*(cp1y+c0)+kD) - 0.5*(cm1y+c0)/(0.5*(cm1y+c0)+kD));
             /*double sT = cp1x/(cp1x+kD)+cm1x/(cm1x+kD)+cp1y/(cp1y+kD)+cm1y/(cm1y+kD)+c0/(c0+kD);
 
             if(sT<0.005){
