@@ -12,18 +12,20 @@ public class cell {
     public double[] position;
     public double[] force;
     public MigrationSimulation sim;
-    public static double speed = 12.0;  // um/min
+    public static double speed = 20.0;  // um/min
     public static double rspeed = Math.sqrt(speed);  // um/min
-    public static double kB = 0.00031;
-    public static double kD = 0.00002;
+    public static double kBIRTH = 0.00031;
+    public static double kDEATH = 0.00002;
     public static Random RG = new Random();
     public boolean original;
     public DoubleRectangle box;
-    public static double width = 20.0;     //Cells 25 um across
+    public static double width = 10.0;     //Cells 20 um across
     public double ld  = 10.0;
     public double CIb = MigrationSimulation.CIbMax;
     public double oF = 0;
     public double oB = 0;
+    public double oU = 0;
+    public double oL = 0;
     public boolean dgr = true;
 
 
@@ -50,7 +52,6 @@ public class cell {
 
         this.sim = sim;
         this.original = true;
-        if(Math.random()<0.5) dgr = false;
     }
 
     public void clear(){
@@ -66,9 +67,11 @@ public class cell {
         this.box.x = (position[0]-width/2);
         this.box.y = (position[1]-width/2);
 
-        //this.position[1] = MyMaths.bounded(MigrationSimulation.padding, sim.yMax-MigrationSimulation.padding, this.position[1]);
-        if(this.position[1]<MigrationSimulation.padding) this.position[1] = 2.0*MigrationSimulation.padding-this.position[1];
-        else if(this.position[1]> sim.yMax-MigrationSimulation.padding) this.position[1] = 2.0* (sim.yMax-MigrationSimulation.padding) - this.position[1];
+        if(this.position[1]<MigrationSimulation.padding||this.position[1]> sim.yMax-MigrationSimulation.padding) {
+            this.position[1] = MyMaths.bounded(MigrationSimulation.padding, sim.yMax - MigrationSimulation.padding, this.position[1]);
+        }
+        //if(this.position[1]<MigrationSimulation.padding) this.position[1] = 2.0*MigrationSimulation.padding-this.position[1];
+        //else if(this.position[1]> sim.yMax-MigrationSimulation.padding) this.position[1] = 2.0* (sim.yMax-MigrationSimulation.padding) - this.position[1];
 
 
         if(this.position[0]<MigrationSimulation.padding) this.position[0] = 2.0*MigrationSimulation.padding-this.position[0];
@@ -98,14 +101,18 @@ public class cell {
         double t2 = b*x();
         double t3 = c;
 
-        if((kD*MelaMigration.dt>Math.random())&&((t1+t2+t3)<Math.random()*MelaMigration.dimensions[0])){
+        if((kDEATH*MelaMigration.dt>Math.random())&&((t1+t2+t3)<Math.random()*MelaMigration.dimensions[0])){
             sim.cells.remove(this);
         }
     }
 
+    public void secreteEnzyme(){
+        sim.environment.AddDegraderAtLocation(x(),y(), 30.0*(1.0-MigrationSimulation.boundFraction)*MelaMigration.dt);
+    }
+
     public synchronized void split(double a, double b, double c){
 
-        if((kB*MelaMigration.dt>Math.random())/*&&((t1+t2+t3)>Math.random()*MelaMigration.dimensions[0])*/){
+        if((kBIRTH*MelaMigration.dt>Math.random())/*&&((t1+t2+t3)>Math.random()*MelaMigration.dimensions[0])*/){
             cell clone = new cell(new double[] {position[0] + width*RG.nextGaussian(), position[1] + width*RG.nextGaussian()},this.sim);
             clone.position[1] = MyMaths.bounded(0.0, MelaMigration.dimensions[1]-0.0, clone.position[1]);
             if(clone.position[0]<0.1) clone.position[0] = 0.2-clone.position[0];

@@ -22,7 +22,7 @@ public class SimGUIPanel {
     double  max         = MelaMigration.max;
     double  dt          = MelaMigration.dt;
     double  dx          = ChemicalEnvironment.grain;
-    double  Diff        = MigrationSimulation.DiffC;
+    double  Diff        = MigrationSimulation.DiffC[0];
     double  speed       = cell.speed;
     double  sMax        = MigrationSimulation.sMax;
     double  kD          = MigrationSimulation.kD;
@@ -95,6 +95,16 @@ public class SimGUIPanel {
         jtkd.setToolTipText("The dissociation constant. \nControls saturation point of receptors.");
         p.add(jtkd);
 
+        p.add(new JLabel("Production", JLabel.TRAILING));
+        JTextField jtProd = new JTextField(Double.toString(ChemicalEnvironment.production));
+        jtDiff.setToolTipText("The production rate of attractant by the environment.");
+        p.add(jtProd);
+
+        p.add(new JLabel("Degradation", JLabel.TRAILING));
+        JTextField jtDegr = new JTextField(Double.toString(ChemicalEnvironment.degradation));
+        jtkd.setToolTipText("The degradation rate of attractant, independent of cells.");
+        p.add(jtDegr);
+
         p.add(new JLabel("sMax.", JLabel.TRAILING));
         JTextField jtsMax = new JTextField(Double.toString(sMax));
         jtsMax.setToolTipText("The maximum rate at which each cell breaks down chemoattractant.");
@@ -129,7 +139,7 @@ public class SimGUIPanel {
 
 
         SpringUtilities.makeCompactGrid(p,
-                8, 4,        //rows, cols
+                9, 4,        //rows, cols
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
         int iR = JOptionPane.showConfirmDialog(p,p, "Simulation 1", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -140,6 +150,9 @@ public class SimGUIPanel {
             contact     = jtc.isSelected();
             absorber    = jta.isSelected();
             pinned      = jPin.isSelected();
+
+            ChemicalEnvironment.production = Double.parseDouble(jtProd.getText());
+            ChemicalEnvironment.degradation = Double.parseDouble(jtDegr.getText());
 
             min   = Double.parseDouble(jtMin.getText());
             max   = Double.parseDouble(jtMax.getText());

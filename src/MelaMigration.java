@@ -1,3 +1,5 @@
+import sun.nio.cs.ext.TIS_620;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -22,25 +24,25 @@ import java.util.concurrent.Future;
  */
 public class MelaMigration {
 
-    public static double  dimensions[] = {24000, 1000, 24000, 1000}; // um
+    public static double  dimensions[] = {12000, 1500, 12000, 1500}; // um
     public static boolean visualise = true;
     public static boolean record = true;
+    public static boolean exdeg  = true;
+
     public static int     yPos = 40;
-    public static double  max = 0.0;
-    public static double  min = 0.0;
+    public static double  max = 10.0;
+    public static double  min = 10.0;
     public static boolean abs = true;
     public static boolean pinned = false;
     public static boolean ctc = false;
-    public static int OutputInterval = 100;
-    public static boolean convolutionDiffusion = false;
 
-    static int pop =2000;                    // Initial population
-    static double T  = 1*6*60;                // Days, Hours, Minutes
+    static int pop = 1500;                    // Initial population
+    static double T  = 1*7*60+10;                // Days, Hours, Minutes
     public static double dt = 0.005;         // 0.05~30.0s
-    public static double alpha = 0.3;
-    public static double outInt = 0.5;
+    public static double alpha = 0.85;
+    public static double outInt = 10000;
     public static double rdt = Math.sqrt(dt);   // Sqrt of dt for brownian motion
-    public static String directory = System.getProperty("user.home")+"/Science/Beatson/Collective Migration/MelanocyteSims/WriteUp_113/20uM/";
+    public static String directory = System.getProperty("user.home")+"/Science/Beatson/Collective Migration/MelanocyteSims/Main/";
     public static boolean finished = false;
 
     public Thread visualiser;
@@ -70,9 +72,11 @@ public class MelaMigration {
                     RWS.Ttotal+=dt;
                     //System.out.println((RWS.Ttotal/(60.0)));
                     RWS.iterateSimulation();
-                    if(i%1000==1){
+                    if(RWS.paused) i--;
+                    //if(i%1==0){
 
                         RWS.draw();
+
                      //   RWS.frame.update(RWS.frame.getGraphics());
                      //   try {
                      //       Robot robot = new Robot();
@@ -85,19 +89,25 @@ public class MelaMigration {
                      //   } catch (IOException e) {
                      //       e.printStackTrace();
                      //   }
-                    }
+                   // }
+                    if(i%100==1) RWS.controlPanel.t_time.setText(Double.toString(dt*i/60.0));
                     if(j*dt>=outInt){
+
+
                         j = 0;
                         String sOut = Double.toString(i*dt/60.0)+",    ";
                         String sO2  = "";
                         String sO3  = "";
+                        String sO4  = "";
                         for(cell c : RWS.cells){
                             sOut+=Double.toString(c.x())+",    "+Double.toString(c.y())+",    ";
                             sO2+=Double.toString(c.oF)+",    "+Double.toString(c.oB)+",    ";
                         }
-                        double[] dEnv = RWS.environment.meanProfile();
-                        for(int n = 0; n<dEnv.length; n++){
-                            sO3+= Double.toString(dEnv[n])+",";
+                        double[] dEnv1 = RWS.environment.meanProfile(0);
+                        double[] dEnv2 = RWS.environment.meanProfile(1);
+                        for(int n = 0; n<dEnv1.length; n++){
+                            sO3+= Double.toString(dEnv1[n])+",";
+                            sO4+= Double.toString(dEnv2[n])+",";
                         }
                         try{
                             RWS.bw.write(sOut);
@@ -106,8 +116,11 @@ public class MelaMigration {
                             RWS.bw2.newLine();
                             RWS.bw3.write(sO3);
                             RWS.bw3.newLine();
+                            RWS.bw4.write(sO4);
+                            RWS.bw4.newLine();
                         }
                         catch (IOException e){}
+
                     }
                     j++;
                 }
@@ -119,6 +132,7 @@ public class MelaMigration {
                     }
                     catch (IOException e){}
                 }
+                while(true)    try{sleep(100);} catch(Exception e){}
             }
         }));
         try {
@@ -157,7 +171,7 @@ public class MelaMigration {
                 if(args[i].equals("p"))             pop = Integer.parseInt(args[i+1]);
                 else if(args[i].equals("max"))      max = Double.parseDouble(args[i+1]);
                 else if(args[i].equals("min"))      min = Double.parseDouble(args[i+1]);
-                else if(args[i].equals("D"))        MigrationSimulation.DiffC = Double.parseDouble(args[i+1]);
+                else if(args[i].equals("D"))        MigrationSimulation.DiffC[0] = Double.parseDouble(args[i+1]);
                 else if(args[i].equals("kD"))       MigrationSimulation.kD    = Double.parseDouble(args[i+1]);
                 else if(args[i].equals("kM"))       MigrationSimulation.kM    = Double.parseDouble(args[i+1]);
                 else if(args[i].equals("sMax"))     MigrationSimulation.sMax  = Double.parseDouble(args[i+1]);
